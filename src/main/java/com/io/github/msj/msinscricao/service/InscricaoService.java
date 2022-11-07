@@ -11,10 +11,10 @@ public interface InscricaoService {
 
     InscricaoMensagemResponseDTO salvar(InscricaoRequestDTO inscricaoRequestDTO);
 
-    InscricaoMensagemResponseDTO finalizar(Long idCurso);
+    InscricaoMensagemResponseDTO finalizar(Integer idCurso);
 
-    List<InscricaoResponseDTO> listarPorIdCurso(Long idCurso);
+    List<InscricaoResponseDTO> listarPorIdCurso(Integer idCurso);
 
-    List<InscricaoFinalizadaResponseDTO> inscritosFinalizados(Long idCurso);
+    List<InscricaoFinalizadaResponseDTO> inscritosFinalizados(Integer idCurso);
 
 }

@@ -6,20 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table
+@Entity
 public class Inscricao {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private Integer idCurso;
 
     private String cpf;
 
-    private Double nota;
+    private BigDecimal nota;
 
     private Situacao situacao;
 

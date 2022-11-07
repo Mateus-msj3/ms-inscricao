@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CursoResourceClient {
 
     @GetMapping("/{id}")
-    public ResponseEntity<CursoResponseDTO> listarPorId(@PathVariable Long id);
+    public ResponseEntity<CursoResponseDTO> listarPorId(@PathVariable Integer id);
 
 }

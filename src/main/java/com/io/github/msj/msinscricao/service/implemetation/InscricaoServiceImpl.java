@@ -40,7 +40,7 @@ public class InscricaoServiceImpl implements InscricaoService {
     }
 
     @Override
-    public InscricaoMensagemResponseDTO finalizar(Long idCurso) {
+    public InscricaoMensagemResponseDTO finalizar(Integer idCurso) {
         List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
         //Integer numeroVagasCurso = 1; //cursoService.quantidadeDeVagas();
 
@@ -54,7 +54,7 @@ public class InscricaoServiceImpl implements InscricaoService {
     }
 
     @Override
-    public List<InscricaoResponseDTO> listarPorIdCurso(Long idCurso) {
+    public List<InscricaoResponseDTO> listarPorIdCurso(Integer idCurso) {
         List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
         return inscricoesEncontradas.stream()
                 .map(inscricao -> modelMapper.map(inscricao, InscricaoResponseDTO.class))
@@ -62,7 +62,7 @@ public class InscricaoServiceImpl implements InscricaoService {
     }
 
     @Override
-    public List<InscricaoFinalizadaResponseDTO> inscritosFinalizados(Long idCurso) {
+    public List<InscricaoFinalizadaResponseDTO> inscritosFinalizados(Integer idCurso) {
         List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
         List<InscricaoFinalizadaResponseDTO> retorno = new ArrayList<>();
         for (Inscricao inscricao : inscricoesEncontradas){
@@ -74,7 +74,7 @@ public class InscricaoServiceImpl implements InscricaoService {
         return retorno;
     }
 
-    private CursoResponseDTO dadosDoCurso(Long idCurso) {
+    private CursoResponseDTO dadosDoCurso(Integer idCurso) {
         //Buscando o número de vagas no microsservice de curso
         ResponseEntity<CursoResponseDTO> curso = cursoResourceClient.listarPorId(idCurso);
 

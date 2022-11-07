@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,9 +15,9 @@ public class InscricaoRequestDTO {
 
     private Integer idCurso;
 
-    private Integer cpf;
+    private String cpf;
 
-    private Double nota;
+    private BigDecimal nota;
 
 }
 

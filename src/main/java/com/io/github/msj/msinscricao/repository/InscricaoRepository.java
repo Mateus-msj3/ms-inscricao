@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
 
-    List<Inscricao> findByIdCurso (Long idCurso);
+    List<Inscricao> findByIdCurso (Integer idCurso);
 
 }
