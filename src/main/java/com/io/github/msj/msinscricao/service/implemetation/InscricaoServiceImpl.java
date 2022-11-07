@@ -1,15 +1,18 @@
 package com.io.github.msj.msinscricao.service.implemetation;
 
 import com.io.github.msj.msinscricao.dto.request.InscricaoRequestDTO;
+import com.io.github.msj.msinscricao.dto.response.CursoResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoFinalizadaResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoMensagemResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoResponseDTO;
 import com.io.github.msj.msinscricao.enums.Situacao;
+import com.io.github.msj.msinscricao.infra.CursoResourceClient;
 import com.io.github.msj.msinscricao.model.Inscricao;
 import com.io.github.msj.msinscricao.repository.InscricaoRepository;
 import com.io.github.msj.msinscricao.service.InscricaoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ public class InscricaoServiceImpl implements InscricaoService {
 
     @Autowired
     private InscricaoRepository inscricaoRepository;
+
+    @Autowired
+    private CursoResourceClient cursoResourceClient;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -36,12 +42,14 @@ public class InscricaoServiceImpl implements InscricaoService {
     @Override
     public InscricaoMensagemResponseDTO finalizar(Long idCurso) {
         List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
-        Integer numeroVagasCurso = 1; //cursoService.quantidadeDeVagas();
+        //Integer numeroVagasCurso = 1; //cursoService.quantidadeDeVagas();
 
-        if (inscricoesEncontradas.size() <= numeroVagasCurso) {
+        var curso = dadosDoCurso(idCurso);
+
+        if (inscricoesEncontradas.size() <= curso.getNumeroVagas()) {
             return selecionarInscritos(inscricoesEncontradas);
         } else {
-            return selecionarInscritosPorNotas(inscricoesEncontradas, numeroVagasCurso);
+            return selecionarInscritosPorNotas(inscricoesEncontradas, curso.getNumeroVagas());
         }
     }
 
@@ -64,6 +72,16 @@ public class InscricaoServiceImpl implements InscricaoService {
             }
         }
         return retorno;
+    }
+
+    private CursoResponseDTO dadosDoCurso(Long idCurso) {
+        //Buscando o número de vagas no microsservice de curso
+        ResponseEntity<CursoResponseDTO> curso = cursoResourceClient.listarPorId(idCurso);
+
+        return CursoResponseDTO.builder()
+                .nome(curso.getBody().getNome())
+                .numeroVagas(curso.getBody().getNumeroVagas())
+                .build();
     }
 
     private InscricaoMensagemResponseDTO selecionarInscritos(List<Inscricao> inscricoes) {
