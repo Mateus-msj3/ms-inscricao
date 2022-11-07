@@ -1,13 +1,13 @@
 package com.io.github.msj.msinscricao.enums;
 
-public enum SituacaoInscricao {
+public enum Situacao {
 
     SELECIONADO("Selecionado"),
     NAO_SELECIONADO("Não Selecionado");
 
     private String situacao;
 
-    SituacaoInscricao(String situacao) {
+    Situacao(String situacao) {
         this.situacao = situacao;
     }
 

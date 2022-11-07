@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InscricaoCursoRequestDTO {
+public class InscricaoRequestDTO {
 
     private Integer idCurso;
 

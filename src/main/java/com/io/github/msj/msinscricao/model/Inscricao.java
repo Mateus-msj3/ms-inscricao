@@ -1,6 +1,6 @@
 package com.io.github.msj.msinscricao.model;
 
-import com.io.github.msj.msinscricao.enums.SituacaoInscricao;
+import com.io.github.msj.msinscricao.enums.Situacao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +21,6 @@ public class Inscricao {
 
     private Double nota;
 
-    private SituacaoInscricao situacaoInscricao;
+    private Situacao situacao;
 
 }
