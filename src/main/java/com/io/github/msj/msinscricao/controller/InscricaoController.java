@@ -24,8 +24,8 @@ public class InscricaoController {
         return ResponseEntity.ok().body(inscricaoMensagemResponseDTO);
     }
 
-    @PostMapping("/finalizar/{idCurso}")
-    public ResponseEntity<InscricaoMensagemResponseDTO> finalizar(@PathVariable Integer idCurso) {
+    @PostMapping("/finalizar")
+    public ResponseEntity<InscricaoMensagemResponseDTO> finalizar(@RequestBody Integer idCurso) {
         InscricaoMensagemResponseDTO inscricaoMensagemResponseDTO = inscricaoService.finalizar(idCurso);
         return ResponseEntity.ok().body(inscricaoMensagemResponseDTO);
     }

@@ -1,6 +1,5 @@
 package com.io.github.msj.msinscricao.dto.response;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,14 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CursoResponseDTO {
+public class PessoaResponseDTO {
 
-    private Long idCurso;
+    private Long id;
 
     private String nome;
 
-    private Integer numeroVagas;
-
-    private String situacao;
+    private String cpf;
 
 }
