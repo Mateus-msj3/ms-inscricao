@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(value = "mscurso", path = "/cursos")
+@FeignClient(value = "mspessoas", path = "/pessoas")
 public interface PessoaResourceClient {
 
     @GetMapping

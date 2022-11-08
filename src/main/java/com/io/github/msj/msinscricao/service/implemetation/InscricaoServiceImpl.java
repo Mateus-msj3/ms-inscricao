@@ -12,6 +12,7 @@ import com.io.github.msj.msinscricao.service.InscricaoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,6 +32,7 @@ public class InscricaoServiceImpl implements InscricaoService {
 
 
     @Override
+    @Transactional
     public InscricaoMensagemResponseDTO salvar(InscricaoRequestDTO inscricaoRequestDTO) {
         Inscricao inscricaoRequest = modelMapper.map(inscricaoRequestDTO, Inscricao.class);
         inscricaoRepository.save(inscricaoRequest);
@@ -38,6 +40,7 @@ public class InscricaoServiceImpl implements InscricaoService {
     }
 
     @Override
+    @Transactional
     public InscricaoMensagemResponseDTO finalizar(Integer idCurso) {
         List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
 
@@ -52,7 +55,7 @@ public class InscricaoServiceImpl implements InscricaoService {
 
     @Override
     public List<InscricaoResponseDTO> listarPorIdCurso(Integer idCurso) {
-        List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
+        List<Inscricao> inscricoesEncontradas = inscricaoRepository.buscarInscricoes(idCurso);
         return inscricoesEncontradas.stream()
                 .map(inscricao -> modelMapper.map(inscricao, InscricaoResponseDTO.class))
                 .collect(Collectors.toList());
@@ -60,7 +63,7 @@ public class InscricaoServiceImpl implements InscricaoService {
 
     @Override
     public List<InscricaoFinalizadaResponseDTO> inscritosFinalizados(Integer idCurso) {
-        List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
+        List<Inscricao> inscricoesEncontradas = inscricaoRepository.buscarInscricoes(idCurso);
         List<InscricaoFinalizadaResponseDTO> retorno = new ArrayList<>();
         for (Inscricao inscricao : inscricoesEncontradas){
             if (inscricao.getSituacao().equals(Situacao.SELECIONADO)) {

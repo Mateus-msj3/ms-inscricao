@@ -1,5 +1,6 @@
 package com.io.github.msj.msinscricao.controller;
 
+import com.io.github.msj.msinscricao.dto.request.InscricaoFinalizacaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.request.InscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoFinalizadaResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoMensagemResponseDTO;
@@ -25,8 +26,8 @@ public class InscricaoController {
     }
 
     @PostMapping("/finalizar")
-    public ResponseEntity<InscricaoMensagemResponseDTO> finalizar(@RequestBody Integer idCurso) {
-        InscricaoMensagemResponseDTO inscricaoMensagemResponseDTO = inscricaoService.finalizar(idCurso);
+    public ResponseEntity<InscricaoMensagemResponseDTO> finalizar(@RequestBody InscricaoFinalizacaoRequestDTO inscricaoFinalizacaoRequestDTO) {
+        InscricaoMensagemResponseDTO inscricaoMensagemResponseDTO = inscricaoService.finalizar(inscricaoFinalizacaoRequestDTO.getIdCurso());
         return ResponseEntity.ok().body(inscricaoMensagemResponseDTO);
     }
 

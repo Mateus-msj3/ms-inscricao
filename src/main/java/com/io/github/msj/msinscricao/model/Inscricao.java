@@ -18,7 +18,7 @@ public class Inscricao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long codigo;
 
     private Integer idCurso;
 
