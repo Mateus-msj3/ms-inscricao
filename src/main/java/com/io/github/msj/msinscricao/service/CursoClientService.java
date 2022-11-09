@@ -1,6 +1,8 @@
 package com.io.github.msj.msinscricao.service;
 
+import com.io.github.msj.msinscricao.dto.request.CursoSituacaoInscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.response.CursoResponseDTO;
+import com.io.github.msj.msinscricao.dto.response.CursoSituacaoInscricaoResponseDTO;
 import com.io.github.msj.msinscricao.infra.CursoResourceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,10 @@ public class CursoClientService {
     public List<CursoResponseDTO> buscarCursos() {
         ResponseEntity<List<CursoResponseDTO>> response = cursoResourceClient.listarTodos();
         return response.getBody();
+    }
+
+    public void atualizarSituacaoInscricao(Long idCurso, CursoSituacaoInscricaoRequestDTO cursoSituacaoInscricaoRequestDTO) {
+        ResponseEntity<CursoSituacaoInscricaoResponseDTO> response = cursoResourceClient.atualizarSituacaoInscricao(idCurso, cursoSituacaoInscricaoRequestDTO);
     }
 
 

@@ -1,10 +1,12 @@
 package com.io.github.msj.msinscricao.service.implemetation;
 
+import com.io.github.msj.msinscricao.dto.request.CursoSituacaoInscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.request.InscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoFinalizadaResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoMensagemResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoResponseDTO;
 import com.io.github.msj.msinscricao.enums.Situacao;
+import com.io.github.msj.msinscricao.enums.SituacaoInscricaoCurso;
 import com.io.github.msj.msinscricao.model.Inscricao;
 import com.io.github.msj.msinscricao.repository.InscricaoRepository;
 import com.io.github.msj.msinscricao.service.CursoClientService;
@@ -47,9 +49,9 @@ public class InscricaoServiceImpl implements InscricaoService {
         var curso = cursoClientService.dadosDoCurso(idCurso);
 
         if (inscricoesEncontradas.size() <= curso.getNumeroVagas()) {
-            return selecionarInscritos(inscricoesEncontradas);
+            return selecionarInscritos(inscricoesEncontradas, idCurso);
         } else {
-            return selecionarInscritosPorNotas(inscricoesEncontradas, curso.getNumeroVagas());
+            return selecionarInscritosPorNotas(inscricoesEncontradas, curso.getNumeroVagas(), idCurso);
         }
     }
 
@@ -74,15 +76,16 @@ public class InscricaoServiceImpl implements InscricaoService {
         return retorno;
     }
 
-    private InscricaoMensagemResponseDTO selecionarInscritos(List<Inscricao> inscricoes) {
+    private InscricaoMensagemResponseDTO selecionarInscritos(List<Inscricao> inscricoes, Integer idCurso) {
         for (Inscricao inscricao : inscricoes) {
             inscricao.setSituacao(Situacao.SELECIONADO);
             inscricaoRepository.save(inscricao);
         }
+        atualizarSituacaoInscricaoCurso(idCurso);
         return new InscricaoMensagemResponseDTO("Inscrição finalizada com sucesso.");
     }
 
-    private InscricaoMensagemResponseDTO selecionarInscritosPorNotas(List<Inscricao> inscricoes, Integer numeroVagas) {
+    private InscricaoMensagemResponseDTO selecionarInscritosPorNotas(List<Inscricao> inscricoes, Integer numeroVagas, Integer idCurso) {
         inscricoes.sort(Comparator.comparing(Inscricao::getNota).reversed());
 
         for (int i = 0; i < inscricoes.size(); i++) {
@@ -94,6 +97,11 @@ public class InscricaoServiceImpl implements InscricaoService {
                 inscricaoRepository.save(inscricoes.get(i));
             }
         }
+        atualizarSituacaoInscricaoCurso(idCurso);
         return new InscricaoMensagemResponseDTO("Inscrição finalizada com sucesso.");
+    }
+
+    private void atualizarSituacaoInscricaoCurso(Integer idCurso) {
+        cursoClientService.atualizarSituacaoInscricao(Long.valueOf(idCurso), new CursoSituacaoInscricaoRequestDTO(SituacaoInscricaoCurso.FINALIZADO));
     }
 }
