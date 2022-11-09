@@ -1,12 +1,13 @@
 package com.io.github.msj.msinscricao.service.implemetation;
 
-import com.io.github.msj.msinscricao.dto.request.CursoSituacaoInscricaoRequestDTO;
+import com.io.github.msj.msinscricao.dto.request.InscricaoFinalizacaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.request.InscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoFinalizadaResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoMensagemResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoResponseDTO;
 import com.io.github.msj.msinscricao.enums.Situacao;
-import com.io.github.msj.msinscricao.enums.SituacaoInscricaoCurso;
+import com.io.github.msj.msinscricao.exception.NegocioException;
+import com.io.github.msj.msinscricao.infra.mqueue.FinalizarInscricaoPublisher;
 import com.io.github.msj.msinscricao.model.Inscricao;
 import com.io.github.msj.msinscricao.repository.InscricaoRepository;
 import com.io.github.msj.msinscricao.service.CursoClientService;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +32,9 @@ public class InscricaoServiceImpl implements InscricaoService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private FinalizarInscricaoPublisher finalizarInscricaoPublisher;
+
 
     @Override
     @Transactional
@@ -42,16 +45,13 @@ public class InscricaoServiceImpl implements InscricaoService {
     }
 
     @Override
-    @Transactional
-    public InscricaoMensagemResponseDTO finalizar(Integer idCurso) {
-        List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
+    public InscricaoMensagemResponseDTO finalizar(InscricaoFinalizacaoRequestDTO inscricaoFinalizacaoRequestDTO) {
+        try {
+            finalizarInscricaoPublisher.finalizarInscricao(inscricaoFinalizacaoRequestDTO);
+            return new InscricaoMensagemResponseDTO("Inscrição finalizada com sucesso.");
 
-        var curso = cursoClientService.dadosDoCurso(idCurso);
-
-        if (inscricoesEncontradas.size() <= curso.getNumeroVagas()) {
-            return selecionarInscritos(inscricoesEncontradas, idCurso);
-        } else {
-            return selecionarInscritosPorNotas(inscricoesEncontradas, curso.getNumeroVagas(), idCurso);
+        }catch (Exception e) {
+            throw new NegocioException(e.getMessage());
         }
     }
 
@@ -76,32 +76,4 @@ public class InscricaoServiceImpl implements InscricaoService {
         return retorno;
     }
 
-    private InscricaoMensagemResponseDTO selecionarInscritos(List<Inscricao> inscricoes, Integer idCurso) {
-        for (Inscricao inscricao : inscricoes) {
-            inscricao.setSituacao(Situacao.SELECIONADO);
-            inscricaoRepository.save(inscricao);
-        }
-        atualizarSituacaoInscricaoCurso(idCurso);
-        return new InscricaoMensagemResponseDTO("Inscrição finalizada com sucesso.");
-    }
-
-    private InscricaoMensagemResponseDTO selecionarInscritosPorNotas(List<Inscricao> inscricoes, Integer numeroVagas, Integer idCurso) {
-        inscricoes.sort(Comparator.comparing(Inscricao::getNota).reversed());
-
-        for (int i = 0; i < inscricoes.size(); i++) {
-            if (i < numeroVagas) {
-                inscricoes.get(i).setSituacao(Situacao.SELECIONADO);
-                inscricaoRepository.save(inscricoes.get(i));
-            } else {
-                inscricoes.get(i).setSituacao(Situacao.NAO_SELECIONADO);
-                inscricaoRepository.save(inscricoes.get(i));
-            }
-        }
-        atualizarSituacaoInscricaoCurso(idCurso);
-        return new InscricaoMensagemResponseDTO("Inscrição finalizada com sucesso.");
-    }
-
-    private void atualizarSituacaoInscricaoCurso(Integer idCurso) {
-        cursoClientService.atualizarSituacaoInscricao(Long.valueOf(idCurso), new CursoSituacaoInscricaoRequestDTO(SituacaoInscricaoCurso.FINALIZADO));
-    }
 }

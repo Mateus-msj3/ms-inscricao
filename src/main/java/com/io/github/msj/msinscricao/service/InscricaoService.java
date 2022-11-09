@@ -1,5 +1,6 @@
 package com.io.github.msj.msinscricao.service;
 
+import com.io.github.msj.msinscricao.dto.request.InscricaoFinalizacaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.request.InscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoFinalizadaResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoMensagemResponseDTO;
@@ -11,7 +12,7 @@ public interface InscricaoService {
 
     InscricaoMensagemResponseDTO salvar(InscricaoRequestDTO inscricaoRequestDTO);
 
-    InscricaoMensagemResponseDTO finalizar(Integer idCurso);
+    InscricaoMensagemResponseDTO finalizar(InscricaoFinalizacaoRequestDTO inscricaoFinalizacaoRequestDTO);
 
     List<InscricaoResponseDTO> listarPorIdCurso(Integer idCurso);
 

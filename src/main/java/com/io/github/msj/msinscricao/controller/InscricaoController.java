@@ -5,6 +5,7 @@ import com.io.github.msj.msinscricao.dto.request.InscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoFinalizadaResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoMensagemResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoResponseDTO;
+import com.io.github.msj.msinscricao.exception.NegocioException;
 import com.io.github.msj.msinscricao.service.InscricaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,6 @@ public class InscricaoController {
         return ResponseEntity.ok().body(inscricaoMensagemResponseDTO);
     }
 
-    @PostMapping("/finalizar")
-    public ResponseEntity<InscricaoMensagemResponseDTO> finalizar(@RequestBody InscricaoFinalizacaoRequestDTO inscricaoFinalizacaoRequestDTO) {
-        InscricaoMensagemResponseDTO inscricaoMensagemResponseDTO = inscricaoService.finalizar(inscricaoFinalizacaoRequestDTO.getIdCurso());
-        return ResponseEntity.ok().body(inscricaoMensagemResponseDTO);
-    }
-
     @GetMapping("/inscritos/{idCurso}")
     public ResponseEntity<List<InscricaoResponseDTO>> listarPorIdCurso(@PathVariable Integer idCurso) {
         List<InscricaoResponseDTO> responseDTOS = inscricaoService.listarPorIdCurso(idCurso);
@@ -41,6 +36,16 @@ public class InscricaoController {
     public ResponseEntity<List<InscricaoFinalizadaResponseDTO>> listarInscritosFinalizados(@PathVariable Integer idCurso) {
         List<InscricaoFinalizadaResponseDTO> responseDTOS = inscricaoService.inscritosFinalizados(idCurso);
         return ResponseEntity.ok().body(responseDTOS);
+    }
+
+    @PostMapping("/solicitar-finalizacao")
+    public ResponseEntity solicitarFinalizacao(@RequestBody InscricaoFinalizacaoRequestDTO dto) {
+        try {
+            InscricaoMensagemResponseDTO inscricaoMensagemResponseDTO = inscricaoService.finalizar(dto);
+            return ResponseEntity.ok(inscricaoMensagemResponseDTO);
+        } catch (NegocioException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
 }
