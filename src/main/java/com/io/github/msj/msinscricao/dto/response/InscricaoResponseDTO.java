@@ -13,6 +13,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class InscricaoResponseDTO {
 
+    private String nomeInscrito;
+
+    private String sobrenome;
+
     private String cpf;
 
     private BigDecimal nota;

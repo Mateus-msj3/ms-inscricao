@@ -5,6 +5,7 @@ import com.io.github.msj.msinscricao.dto.request.InscricaoRequestDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoFinalizadaResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoMensagemResponseDTO;
 import com.io.github.msj.msinscricao.dto.response.InscricaoResponseDTO;
+import com.io.github.msj.msinscricao.dto.response.PessoaResponseDTO;
 import com.io.github.msj.msinscricao.enums.Situacao;
 import com.io.github.msj.msinscricao.exception.NegocioException;
 import com.io.github.msj.msinscricao.infra.mqueue.FinalizarInscricaoPublisher;
@@ -12,6 +13,7 @@ import com.io.github.msj.msinscricao.model.Inscricao;
 import com.io.github.msj.msinscricao.repository.InscricaoRepository;
 import com.io.github.msj.msinscricao.service.CursoClientService;
 import com.io.github.msj.msinscricao.service.InscricaoService;
+import com.io.github.msj.msinscricao.service.PessoaClientService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class InscricaoServiceImpl implements InscricaoService {
@@ -29,6 +30,9 @@ public class InscricaoServiceImpl implements InscricaoService {
 
     @Autowired
     private CursoClientService cursoClientService;
+
+    @Autowired
+    private PessoaClientService pessoaClientService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -56,11 +60,20 @@ public class InscricaoServiceImpl implements InscricaoService {
     }
 
     @Override
-    public List<InscricaoResponseDTO> listarPorIdCurso(Integer idCurso) {
+    public List<InscricaoResponseDTO> listarInscricaoPorCurso(Integer idCurso) {
         List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(idCurso);
-        return inscricoesEncontradas.stream()
-                .map(inscricao -> modelMapper.map(inscricao, InscricaoResponseDTO.class))
-                .collect(Collectors.toList());
+        List<InscricaoResponseDTO> inscricaoResponseDTOS = new ArrayList<>();
+        InscricaoResponseDTO inscricaoResponseDTO = new InscricaoResponseDTO();
+        for (Inscricao inscricao : inscricoesEncontradas) {
+            PessoaResponseDTO pessoa = pessoaClientService.buscarPessoaPorCpf(inscricao.getCpf());
+            if (pessoa != null) {
+                inscricaoResponseDTO.setNomeInscrito(pessoa.getNome());
+                inscricaoResponseDTO.setCpf(pessoa.getCpf());
+                inscricaoResponseDTO.setNota(inscricao.getNota());
+                inscricaoResponseDTOS.add(inscricaoResponseDTO);
+            }
+        }
+        return inscricaoResponseDTOS;
     }
 
     @Override

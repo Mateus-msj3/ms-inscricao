@@ -28,7 +28,7 @@ public class InscricaoController {
 
     @GetMapping("/inscritos/{idCurso}")
     public ResponseEntity<List<InscricaoResponseDTO>> listarPorIdCurso(@PathVariable Integer idCurso) {
-        List<InscricaoResponseDTO> responseDTOS = inscricaoService.listarPorIdCurso(idCurso);
+        List<InscricaoResponseDTO> responseDTOS = inscricaoService.listarInscricaoPorCurso(idCurso);
         return ResponseEntity.ok().body(responseDTOS);
     }
 

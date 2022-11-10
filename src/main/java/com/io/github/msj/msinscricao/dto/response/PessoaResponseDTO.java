@@ -15,6 +15,8 @@ public class PessoaResponseDTO {
 
     private String nome;
 
+    private String sobrenome;
+
     private String cpf;
 
 }

@@ -135,7 +135,7 @@ public class InscricaoServiceTest {
         when(inscricaoRepository.findByIdCurso(ID)).thenReturn(inscricoes);
         when(modelMapper.map(any(), any())).thenReturn(any());
 
-        List<InscricaoResponseDTO> retorno = inscricaoService.listarPorIdCurso(ID);
+        List<InscricaoResponseDTO> retorno = inscricaoService.listarInscricaoPorCurso(ID);
 
         verify(inscricaoRepository, times(1)).findByIdCurso(eq(ID));
 
