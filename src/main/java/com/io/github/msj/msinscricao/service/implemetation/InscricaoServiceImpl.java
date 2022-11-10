@@ -43,6 +43,9 @@ public class InscricaoServiceImpl implements InscricaoService {
     @Override
     @Transactional
     public InscricaoMensagemResponseDTO salvar(InscricaoRequestDTO inscricaoRequestDTO) {
+        if (inscricaoRepository.existsByCpf(inscricaoRequestDTO.getCpf())) {
+            throw new NegocioException("O candidato com cpf: " + inscricaoRequestDTO.getCpf() + " já está inscrito no curso.");
+        }
         Inscricao inscricaoRequest = modelMapper.map(inscricaoRequestDTO, Inscricao.class);
         inscricaoRepository.save(inscricaoRequest);
         return new InscricaoMensagemResponseDTO("Inscrição realizada com sucesso.");

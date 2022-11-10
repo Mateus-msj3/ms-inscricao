@@ -47,7 +47,6 @@ public class FinalizarInscricaoSubscriber {
     @Transactional
     public InscricaoMensagemResponseDTO finalizarInscricao(InscricaoFinalizacaoRequestDTO inscricaoFinalizacaoRequestDTO) throws JsonProcessingException {
 
-
         List<Inscricao> inscricoesEncontradas = inscricaoRepository.findByIdCurso(inscricaoFinalizacaoRequestDTO.getIdCurso());
 
         var curso = cursoClientService.dadosDoCurso(inscricaoFinalizacaoRequestDTO.getIdCurso());
