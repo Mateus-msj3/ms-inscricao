@@ -71,6 +71,7 @@ public class InscricaoServiceImpl implements InscricaoService {
             PessoaResponseDTO pessoa = pessoaClientService.buscarPessoaPorCpf(inscricao.getCpf());
             if (pessoa != null) {
                 inscricaoResponseDTO.setNomeInscrito(pessoa.getNome());
+                inscricaoResponseDTO.setSobrenome(pessoa.getSobrenome());
                 inscricaoResponseDTO.setCpf(pessoa.getCpf());
                 inscricaoResponseDTO.setNota(inscricao.getNota());
                 inscricaoResponseDTOS.add(inscricaoResponseDTO);
